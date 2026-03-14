@@ -2,3 +2,5 @@ node_modules/
 out/
 .env
 *.log
+publish_log.txt
+publish_log_utf8.txt
