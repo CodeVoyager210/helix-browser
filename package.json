@@ -1,7 +1,7 @@
 {
   "name": "helix-browser",
   "productName": "Helix Browser",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A fast, RAM-efficient Chromium-based browser with auto-updates",
   "author": "Efthimis",
   "main": "src/main.js",
@@ -19,7 +19,8 @@
     "electron": "^41.0.2"
   },
   "dependencies": {
-    "electron-updater": "^6.1.8",
-    "electron-log": "^5.1.2"
+    "electron-log": "^5.1.2",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-updater": "^6.1.8"
   }
 }

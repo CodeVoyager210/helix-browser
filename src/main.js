@@ -1,5 +1,7 @@
 'use strict';
 
+if (require('electron-squirrel-startup')) return;
+
 const { app, BrowserWindow, ipcMain, session, shell, Menu, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
