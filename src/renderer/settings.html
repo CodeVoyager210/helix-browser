@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — Helix Browser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-base:      #0f0f13;
+      --bg-surface:   #17171f;
+      --bg-elevated:  #1e1e2a;
+      --bg-hover:     #25253a;
+      --accent:       #7f5af0;
+      --accent-soft:  rgba(127,90,240,0.18);
+      --accent-2:     #60a5fa;
+      --text-primary: #e8e8f0;
+      --text-secondary:#8888aa;
+      --text-muted:   #55556a;
+      --border:       rgba(255,255,255,0.07);
+      --border-strong:rgba(255,255,255,0.12);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --font: 'Inter', system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-base);
+      color: var(--text-primary);
+      padding: 32px 40px 64px;
+      overflow-y: auto;
+      min-height: 100vh;
+    }
+    button { cursor: pointer; border: none; background: none; color: inherit; font-family: inherit; }
+    input, select { font-family: var(--font); }
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #c4b5fd, #93c5fd);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 36px; }
+    .section { margin-bottom: 36px; }
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 6px;
+    }
+    .setting-row:hover { background: var(--bg-elevated); }
+    .setting-label { font-size: 14px; }
+    .setting-desc  { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    /* Toggle Switch */
+    .toggle { position: relative; display: inline-block; width: 40px; height: 22px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: var(--bg-hover);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      left: 3px; top: 3px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--accent-soft); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); background: var(--accent); }
+    /* Select */
+    select {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+    /* Btn */
+    .btn {
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-danger { background: rgba(229,76,76,0.15); color: #e54c4c; border: 1px solid rgba(229,76,76,0.25); }
+    .btn-danger:hover { background: rgba(229,76,76,0.25); }
+    .btn:active { transform: scale(0.97); }
+    #status-msg {
+      font-size: 13px;
+      color: var(--accent-2);
+      margin-top: 10px;
+      min-height: 20px;
+    }
+    #update-info { font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
+    /* Extensions */
+    .ext-list { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .ext-item { background: var(--bg-elevated); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .ext-title { font-size: 13px; font-weight: 500; }
+    .ext-version { font-size: 11px; color: var(--text-muted); margin-left: 6px; }
+    .ext-id { font-size: 10px; color: var(--text-muted); font-family: monospace; display: block; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <h1>⚙️ Settings</h1>
+  <p class="subtitle">Helix Browser preferences</p>
+
+  <!-- Appearance -->
+  <div class="section">
+    <div class="section-title">Appearance</div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Theme</div>
+        <div class="setting-desc">Choose display theme</div>
+      </div>
+      <select id="sel-theme">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Show Bookmarks Bar</div>
+        <div class="setting-desc">Always show bookmark shortcuts below toolbar</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="tog-bookmarks" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Performance -->
+  <div class="section">
+    <div class="section-title">Performance & RAM</div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Tab Sleep Timeout</div>
+        <div class="setting-desc">Inactive tabs enter sleep mode to free RAM</div>
+      </div>
+      <select id="sel-sleep">
+        <option value="1">1 minute</option>
+        <option value="5">5 minutes</option>
+        <option value="15">15 minutes</option>
+        <option value="30">30 minutes</option>
+        <option value="0">Never</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Enable Spellcheck</div>
+        <div class="setting-desc">Disabling saves ~30 MB of RAM</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="tog-spellcheck" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Privacy -->
+  <div class="section">
+    <div class="section-title">Privacy & Data</div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Clear Browsing History</div>
+        <div class="setting-desc">Remove all saved history entries</div>
+      </div>
+      <button class="btn btn-danger" id="btn-clear-history">Clear History</button>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Clear Cache</div>
+        <div class="setting-desc">Free disk space and refresh cached resources</div>
+      </div>
+      <button class="btn btn-danger" id="btn-clear-cache">Clear Cache</button>
+    </div>
+  </div>
+
+  <!-- Updates -->
+  <div class="section">
+    <div class="section-title">Updates</div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Auto-update</div>
+        <div class="setting-desc">Automatically download and install updates in the background</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="tog-autoupdate" checked />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Check for Updates</div>
+        <div id="update-info">Last checked: just now</div>
+      </div>
+      <button class="btn btn-primary" id="btn-check-update">Check Now</button>
+    </div>
+  </div>
+
+  <!-- Extensions -->
+  <div class="section">
+    <div class="section-title">Extensions</div>
+    
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Load Unpacked Extension</div>
+        <div class="setting-desc">Select a local directory containing your Chrome extension</div>
+      </div>
+      <button class="btn btn-primary" id="btn-load-ext">Load Directory</button>
+    </div>
+
+    <div id="ext-container">
+      <div class="setting-desc" style="margin-top:12px; margin-bottom: 8px;">Installed Extensions</div>
+      <div id="ext-list" class="ext-list">
+        <div class="setting-desc">No extensions loaded</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="section">
+    <div class="section-title">About</div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Helix Browser</div>
+        <div class="setting-desc">Built with Electron · Chromium engine · Open Source</div>
+      </div>
+      <span id="about-version" style="font-size:13px;color:var(--text-muted)">v1.0.0</span>
+    </div>
+  </div>
+
+  <div id="status-msg"></div>
+
+  <script>
+    const settings = JSON.parse(localStorage.getItem('helix-settings') || '{}');
+
+    // Load
+    document.getElementById('sel-theme').value        = settings.theme        || 'dark';
+    document.getElementById('tog-bookmarks').checked  = settings.showBookmarksBar || false;
+    document.getElementById('sel-sleep').value        = settings.sleepTimeout != null ? settings.sleepTimeout : 5;
+    document.getElementById('tog-spellcheck').checked = settings.spellcheck   || false;
+
+    function save() {
+      const updated = {
+        theme:            document.getElementById('sel-theme').value,
+        showBookmarksBar: document.getElementById('tog-bookmarks').checked,
+        sleepTimeout:     parseInt(document.getElementById('sel-sleep').value),
+        spellcheck:       document.getElementById('tog-spellcheck').checked,
+      };
+      localStorage.setItem('helix-settings', JSON.stringify(updated));
+      window.parent.postMessage({ type: 'settings-update', settings: updated }, '*');
+      showStatus('Settings saved ✓');
+    }
+
+    function showStatus(msg) {
+      const el = document.getElementById('status-msg');
+      el.textContent = msg;
+      setTimeout(() => { el.textContent = ''; }, 2500);
+    }
+
+    // Listen for changes
+    ['sel-theme','tog-bookmarks','sel-sleep','tog-spellcheck'].forEach(id => {
+      document.getElementById(id).addEventListener('change', save);
+    });
+
+    document.getElementById('btn-clear-history').addEventListener('click', () => {
+      if (confirm('Clear all browsing history?')) {
+        window.parent.postMessage({ type: 'clear-history' }, '*');
+        showStatus('History cleared ✓');
+      }
+    });
+
+    document.getElementById('btn-clear-cache').addEventListener('click', () => {
+      window.parent.postMessage({ type: 'clear-cache' }, '*');
+      showStatus('Cache clear requested ✓');
+    });
+
+    document.getElementById('btn-check-update').addEventListener('click', () => {
+      showStatus('Checking for updates…');
+      window.parent.postMessage({ type: 'check-update' }, '*');
+      document.getElementById('update-info').textContent = 'Checking…';
+    });
+
+    // Receive update result
+    window.addEventListener('message', (e) => {
+      if (e.data?.type === 'update-result') {
+        const res = e.data.res;
+        document.getElementById('update-info').textContent = res.ok ? 'Check complete' : 'Error: ' + res.error;
+        showStatus(res.ok ? 'No updates found' : 'Update check failed');
+      }
+    });
+
+    // Version (will be overridden if parent sends it)
+    try {
+      if (window.parent.browserAPI) {
+        window.parent.browserAPI.getVersion().then(v => {
+          document.getElementById('about-version').textContent = 'v' + v;
+        });
+      }
+    } catch(_) {}
+
+    // Extension Management
+    async function refreshExtensions() {
+      if (!window.parent.browserAPI || !window.parent.browserAPI.getExtensions) return;
+      
+      const list = document.getElementById('ext-list');
+      try {
+        const exts = await window.parent.browserAPI.getExtensions();
+        if (exts.length === 0) {
+          list.innerHTML = '<div class="setting-desc">No extensions loaded</div>';
+          return;
+        }
+
+        list.innerHTML = '';
+        exts.forEach(ext => {
+          const el = document.createElement('div');
+          el.className = 'ext-item';
+          el.innerHTML = `
+            <div>
+              <span class="ext-title">${ext.name}</span>
+              <span class="ext-version">v${ext.version}</span>
+              <span class="ext-id">ID: ${ext.id}</span>
+            </div>
+            <button class="btn btn-danger" onclick="removeExtension('${ext.id}')">Remove</button>
+          `;
+          list.appendChild(el);
+        });
+      } catch (e) {
+        console.error('Failed to get extensions', e);
+      }
+    }
+
+    async function removeExtension(id) {
+      if (!window.parent.browserAPI) return;
+      if (confirm('Remove this extension? Restart required to fully unload.')) {
+        await window.parent.browserAPI.removeExtension(id);
+        refreshExtensions();
+        showStatus('Extension removed ✓');
+      }
+    }
+
+    document.getElementById('btn-load-ext').addEventListener('click', async () => {
+      if (!window.parent.browserAPI) return;
+      document.getElementById('btn-load-ext').textContent = 'Loading...';
+      try {
+        const res = await window.parent.browserAPI.loadExtension();
+        if (res.canceled) return;
+        if (res.ok) {
+          showStatus('Extension loaded ✓');
+          refreshExtensions();
+        } else {
+          alert('Failed to load extension: ' + res.error);
+        }
+      } catch (e) {
+        alert('Extension error: ' + e.message);
+      } finally {
+        document.getElementById('btn-load-ext').textContent = 'Load Directory';
+      }
+    });
+
+    // Initial load
+    refreshExtensions();
+  </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helix Browser</title>
+  <link rel="stylesheet" href="browser.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ─── Custom Titlebar ─────────────────────────────────────────────── -->
+<div id="titlebar">
+  <div id="titlebar-drag"></div>
+  <div id="titlebar-controls">
+    <button id="btn-minimize" class="tb-btn" title="Minimize">&#x2212;</button>
+    <button id="btn-maximize" class="tb-btn" title="Maximize">&#x25A1;</button>
+    <button id="btn-close"    class="tb-btn close" title="Close">&#x2715;</button>
+  </div>
+</div>
+
+<!-- ─── Tab Bar ─────────────────────────────────────────────────────── -->
+<div id="tabbar">
+  <div id="tabs-container"></div>
+  <button id="btn-new-tab" title="New Tab">
+    <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+      <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ─── Toolbar ─────────────────────────────────────────────────────── -->
+<div id="toolbar">
+  <div id="nav-buttons">
+    <button id="btn-back" class="nav-btn" title="Back (Alt+Left)">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M10.5 3.5 5 8l5.5 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button id="btn-forward" class="nav-btn" title="Forward (Alt+Right)">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M5.5 3.5 11 8 5.5 12.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button id="btn-reload" class="nav-btn" title="Reload (Ctrl+R)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15">
+        <path d="M13.5 8A5.5 5.5 0 1 1 8 2.5M8 2.5V.5M8 2.5l2.5 2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button id="btn-home" class="nav-btn" title="New Tab">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M8 1L1 7h2v8h4v-5h2v5h4V7h2L8 1Z"/></svg>
+    </button>
+  </div>
+
+  <div id="address-bar-wrapper">
+    <div id="secure-icon" class="hidden">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12"><path d="M8 1a3 3 0 0 0-3 3v2H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3Zm-2 5V4a2 2 0 0 1 4 0v2H6Zm2 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg>
+    </div>
+    <input id="address-bar" type="text" placeholder="Search or enter URL…" autocomplete="off" spellcheck="false" />
+    <div id="loading-spinner" class="hidden"></div>
+  </div>
+
+  <div id="toolbar-actions">
+    <button id="btn-bookmark" class="nav-btn" title="Bookmark this page">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.5l-5-2.8-5 2.8V2Z"/></svg>
+    </button>
+    <button id="btn-downloads" class="nav-btn" title="Downloads">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M8 10.5 4.5 7 6 5.5l1.25 1.25V2h1.5v4.75L10 5.5l1.5 1.5L8 10.5ZM2 13h12v1.5H2V13Z"/></svg>
+    </button>
+    <button id="btn-settings" class="nav-btn" title="Settings">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M6.5 1h3l.5 1.5a5 5 0 0 1 1.2.7l1.5-.5 2 3-1.1 1.1a5 5 0 0 1 0 1.4l1.1 1.1-2 3-1.5-.5a5 5 0 0 1-1.2.7L9.5 15h-3l-.5-1.5a5 5 0 0 1-1.2-.7l-1.5.5-2-3L2.4 9A5 5 0 0 1 2.4 7L1.3 5.9l2-3 1.5.5A5 5 0 0 1 6 2.5L6.5 1ZM8 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/></svg>
+    </button>
+    <div id="memory-badge" title="RAM usage" class="hidden">0 MB</div>
+  </div>
+</div>
+
+<!-- ─── Bookmarks Bar ────────────────────────────────────────────────── -->
+<div id="bookmarks-bar" class="hidden">
+  <div id="bookmarks-list"></div>
+</div>
+
+<!-- ─── Tab Content Area ─────────────────────────────────────────────── -->
+<div id="browser-content">
+  <!-- webviews injected by JS -->
+</div>
+
+<!-- ─── New Tab Home Page ─────────────────────────────────────────────── -->
+<div id="new-tab-page" class="hidden">
+  <div id="ntp-inner">
+    <div id="ntp-logo">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="72" height="72">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#8B5CF6"/>
+            <stop offset="100%" stop-color="#60A5FA"/>
+          </linearGradient>
+        </defs>
+        <circle cx="40" cy="40" r="38" fill="url(#lg1)" opacity="0.15"/>
+        <circle cx="40" cy="40" r="24" stroke="url(#lg1)" stroke-width="3" fill="none"/>
+        <ellipse cx="40" cy="40" rx="10" ry="24" stroke="url(#lg1)" stroke-width="2" fill="none"/>
+        <line x1="18" y1="40" x2="62" y2="40" stroke="url(#lg1)" stroke-width="2"/>
+      </svg>
+    </div>
+    <h1 id="ntp-title">Helix Browser</h1>
+    <p id="ntp-subtitle">Fast. Private. Efficient.</p>
+
+    <form id="ntp-search-form">
+      <input id="ntp-search" type="text" placeholder="Search the web or enter a URL…" autocomplete="off" spellcheck="false" />
+      <button type="submit">Go</button>
+    </form>
+
+    <div id="ntp-shortcuts">
+      <div class="shortcut" data-url="https://google.com">
+        <div class="shortcut-icon">G</div>
+        <span>Google</span>
+      </div>
+      <div class="shortcut" data-url="https://github.com">
+        <div class="shortcut-icon">GH</div>
+        <span>GitHub</span>
+      </div>
+      <div class="shortcut" data-url="https://youtube.com">
+        <div class="shortcut-icon">YT</div>
+        <span>YouTube</span>
+      </div>
+      <div class="shortcut" data-url="https://twitter.com">
+        <div class="shortcut-icon">X</div>
+        <span>Twitter</span>
+      </div>
+    </div>
+
+    <div id="ntp-stats">
+      <span id="stat-tabs">0 sleeping tabs</span>
+      <span class="stat-sep">·</span>
+      <span id="stat-ram">RAM: —</span>
+      <span class="stat-sep">·</span>
+      <span id="stat-version">v1.0.0</span>
+    </div>
+
+    <button id="btn-ntp-close" title="Close Helix Browser">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+        <path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/>
+      </svg>
+      Close App
+    </button>
+  </div>
+</div>
+
+<!-- ─── Downloads Panel ──────────────────────────────────────────────── -->
+<div id="downloads-panel" class="hidden">
+  <div id="downloads-header">
+    <span>Downloads</span>
+    <button id="downloads-close">✕</button>
+  </div>
+  <div id="downloads-list"></div>
+</div>
+
+<!-- ─── Update Banner ────────────────────────────────────────────────── -->
+<div id="update-banner" class="hidden">
+  <span id="update-message">🔄 Update available!</span>
+  <button id="btn-install-update">Restart &amp; Install</button>
+  <button id="btn-dismiss-update">✕</button>
+</div>
+
+<!-- ─── Context Menu ────────────────────────────────────────── -->
+<div id="context-menu" class="hidden">
+  <div class="ctx-item" data-action="back">Back</div>
+  <div class="ctx-item" data-action="forward">Forward</div>
+  <div class="ctx-item" data-action="reload">Reload</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" data-action="bookmark">Bookmark page</div>
+  <div class="ctx-item" data-action="copy-url">Copy URL</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" data-action="view-source">View source</div>
+</div>
+
+<script src="browser.js"></script>
+</body>
+</html>
