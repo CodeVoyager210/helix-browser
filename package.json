@@ -1,7 +1,7 @@
 {
   "name": "helix-browser",
   "productName": "Helix Browser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A fast, RAM-efficient Chromium-based browser with auto-updates",
   "author": "Efthimis",
   "main": "src/main.js",
